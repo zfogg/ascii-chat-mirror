@@ -74,7 +74,7 @@ RUN apt-get update && \
       libmimalloc-dev libzstd-dev zlib1g-dev libsodium-dev portaudio19-dev libopus-dev libsystemd-dev \
       libssl-dev libminiupnpc-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libswresample-dev \
       libwebsockets-dev libvterm-dev libfreetype6-dev libfontconfig1-dev \
-      ca-certificates curl \
+      ca-certificates curl unzip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Copy installed files from builder
