@@ -54,8 +54,8 @@ import { Settings, SettingsConfig } from "../components/Settings";
 import { AsciiChatWebHead } from "../components/AsciiChatWebHead";
 import { AsciiChatMode } from "../utils/optionsHelp";
 import {
-  mapColorModeToClient,
   mapColorFilterToClient,
+  mapColorModeToClient,
 } from "../utils/colorMappers";
 import { PageControlBar } from "../components/PageControlBar";
 import { PageLayout } from "../components/PageLayout";
@@ -1004,7 +1004,9 @@ export function ClientPage() {
         }
       }, sendInterval);
       console.log(
-        `[Client] Started frame send timer: ${sendInterval.toFixed(1)}ms interval (${settings.targetFps} FPS)`,
+        `[Client] Started frame send timer: ${sendInterval.toFixed(
+          1,
+        )}ms interval (${settings.targetFps} FPS)`,
       );
     } else {
       // Stop timer when disconnected
@@ -1435,18 +1437,14 @@ export function ClientPage() {
       );
       startRenderLoop();
     }
-    // Note: startRenderLoop is NOT in deps array to avoid circular dependency issues
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
-  }, [connectionState]);
+  }, [connectionState, startRenderLoop]);
 
   useEffect(() => {
     if (connectionState === ConnectionState.CONNECTED && !isWebcamRunning) {
       console.log("[Client] Connected and ready, auto-starting webcam...");
       void startWebcam();
     }
-    // Note: startWebcam is NOT in deps array to avoid circular dependency issues
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
-  }, [connectionState, isWebcamRunning]);
+  }, [connectionState, isWebcamRunning, startWebcam]);
 
   const getStatusDotColor = () => {
     switch (connectionState) {

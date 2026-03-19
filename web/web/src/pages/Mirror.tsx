@@ -1,27 +1,27 @@
-import { useEffect, useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import "xterm/css/xterm.css";
 import {
-  initMirrorWasm,
   convertFrameToAscii,
+  initMirrorWasm,
   isWasmReady,
 } from "../wasm/mirror";
 import {
-  setDimensions,
-  getDimensions,
-  setColorMode,
-  getColorMode,
-  setColorFilter,
   getColorFilter,
-  setPalette,
-  getPalette,
-  setPaletteChars,
-  getPaletteChars,
-  setMatrixRain,
-  getMatrixRain,
-  setFlipX,
+  getColorMode,
+  getDimensions,
   getFlipX,
-  setTargetFps,
+  getMatrixRain,
+  getPalette,
+  getPaletteChars,
   getTargetFps,
+  setColorFilter,
+  setColorMode,
+  setDimensions,
+  setFlipX,
+  setMatrixRain,
+  setPalette,
+  setPaletteChars,
+  setTargetFps,
 } from "../wasm/common/options";
 import { SITES } from "@ascii-chat/shared/utils";
 import { Settings, SettingsConfig } from "../components/Settings";
@@ -31,8 +31,8 @@ import { PageLayout } from "../components/PageLayout";
 import { AsciiChatWebHead } from "../components/AsciiChatWebHead";
 import { AsciiChatMode } from "../utils/optionsHelp";
 import {
-  mapColorModeToWasm,
   mapColorFilterToWasm,
+  mapColorModeToWasm,
 } from "../utils/colorMappers";
 import { createWasmOptionsManager } from "../hooks/useWasmOptions";
 import { useClientLike } from "../hooks/useClientLike";
@@ -208,7 +208,9 @@ export function MirrorPage() {
 
       if (debugCountRef.current === 0) {
         console.log(
-          `[Mirror] First frame captured at ${now - firstFrameTimeRef.current!}ms: ${frame.width}x${frame.height}, ${frame.data.length} bytes`,
+          `[Mirror] First frame captured at ${
+            now - firstFrameTimeRef.current!
+          }ms: ${frame.width}x${frame.height}, ${frame.data.length} bytes`,
         );
       }
 
@@ -232,7 +234,9 @@ export function MirrorPage() {
 
       if (debugCountRef.current === 0) {
         console.log(
-          `[Mirror] First ASCII art generated at ${performance.now() - firstFrameTimeRef.current!}ms: ${asciiArt.length} chars`,
+          `[Mirror] First ASCII art generated at ${
+            performance.now() - firstFrameTimeRef.current!
+          }ms: ${asciiArt.length} chars`,
         );
       }
 
@@ -261,8 +265,16 @@ export function MirrorPage() {
     }, frameIntervalRef.current);
 
     return () => clearInterval(interval);
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
-  }, [isWebcamRunning, captureFrame, terminalDimensions]);
+  }, [
+    isWebcamRunning,
+    captureFrame,
+    terminalDimensions,
+    rendererRef,
+    firstFrameTimeRef,
+    debugCountRef,
+    frameIntervalRef,
+    canvasRef,
+  ]);
 
   const startWebcam = useCallback(async () => {
     const clickTime = performance.now();
@@ -322,7 +334,9 @@ export function MirrorPage() {
       });
       console.timeEnd("[Mirror] getUserMedia (incl browser permission)");
       console.log(
-        `[Mirror] Stream received after ${performance.now() - clickTime}ms from button click`,
+        `[Mirror] Stream received after ${
+          performance.now() - clickTime
+        }ms from button click`,
       );
 
       streamRef.current = stream;
