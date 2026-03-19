@@ -68,14 +68,19 @@ RUN apt-get update && \
     localedef -i en_US -f UTF-8 en_US.UTF-8 && \
     rm -rf /var/lib/apt/lists/*
 
-# Install runtime dependencies (install -dev packages for runtime libs + headers, without build tools)
+# Install runtime dependencies in two stages to avoid container layer overflow
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       libmimalloc-dev libzstd-dev zlib1g-dev libsodium-dev portaudio19-dev libopus-dev libsystemd-dev \
-      libssl-dev libminiupnpc-dev libavformat-dev libavcodec-dev libavutil-dev libswscale-dev libswresample-dev \
+      libssl-dev libminiupnpc-dev libavformat-dev libavcodec-dev libavutil-dev \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* /var/tmp/*
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      libswscale-dev libswresample-dev \
       libwebsockets-dev libvterm-dev libfreetype6-dev libfontconfig1-dev \
       ca-certificates curl unzip \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* /var/tmp/*
 
 # Copy installed files from builder
 COPY --from=builder /usr/local /usr/local
